@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon for Freedom Calls Long View: navy sheet, gold bars, a mist band for the calling period. -->
+  <rect width="64" height="64" rx="12" fill="#13213C"/>
+  <rect x="31" y="10" width="16" height="44" fill="#C5CFDF" opacity="0.18"/>
+  <rect x="11" y="18" width="7" height="36" rx="2" fill="#E2B13C"/>
+  <rect x="22" y="26" width="7" height="28" rx="2" fill="#E2B13C"/>
+  <rect x="33" y="29" width="7" height="25" rx="2" fill="#E2B13C"/>
+  <rect x="44" y="35" width="7" height="19" rx="2" fill="#E2B13C"/>
+</svg>

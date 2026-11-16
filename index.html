@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Freedom Calls Long View</title>
+<meta name="description" content="LNC individual gifts, sustaining members and larger donors from 2016 to now, before, during and after the Freedom Calls phone program, from the LNC's own FEC filings and monthly membership reports.">
+<link rel="canonical" href="https://drugsforrobots.github.io/freedom-calls-long-view/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Freedom Calls Long View">
+<meta property="og:title" content="Freedom Calls Long View">
+<meta property="og:description" content="LNC individual gifts, sustaining members and larger donors from 2016 to now, before, during and after the Freedom Calls phone program, from the LNC's own FEC filings and monthly membership reports.">
+<meta property="og:url" content="https://drugsforrobots.github.io/freedom-calls-long-view/">
+<meta property="og:image" content="https://drugsforrobots.github.io/freedom-calls-long-view/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Freedom Calls Long View: small gifts fell from $986k to $741k a year before the calls, then held at $699k–$726k while they ran">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Freedom Calls Long View">
+<meta name="twitter:description" content="LNC individual gifts, sustaining members and larger donors from 2016 to now, before, during and after the Freedom Calls phone program, from the LNC's own FEC filings and monthly membership reports.">
+<meta name="twitter:image" content="https://drugsforrobots.github.io/freedom-calls-long-view/preview.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Public+Sans:ital,wght@0,400..700;1,400&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); color-scheme: dark; }
+  html { background: #0F1A30; }
+  body { margin: 0; background: #0F1A30; padding-block: 24px 48px;
+          padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  #dash-root { max-width: 72rem; margin-inline: auto; }
+  img { max-width: 100%; } [hidden] { display: none !important; }
+</style>
+<style>
+  /* Layout: the family's navy sheet; a lede, then six charts in reading order (money, members, donors, the two indexed views, the long view), then notes. */
+  .fcl {
+    --deep: #0F1A30; --navy: #13213C; --panel: #1C2D4D; --cream: #F5F1E8; --mist: #C5CFDF; --dim: #A3AFC4; --gold: #E2B13C; --slate: #3A4D70; --slate2: #6B7C9E; --warn: #E8875A; --line: rgba(197, 207, 223, 0.16);
+    --serif: 'Libre Baskerville', Georgia, serif; --sans: 'Public Sans', Arial, sans-serif;
+    display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); font-family: var(--sans); color: var(--cream); background: var(--navy);
+    border-radius: 16px; padding: clamp(1.25rem, 5vw, 4rem); line-height: 1.45; color-scheme: dark;
+  }
+  .fcl h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0; text-wrap: balance; }
+  .fcl h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.2rem, 2.4vw, 1.6rem); line-height: 1.2; margin: 0; text-wrap: balance; }
+  .fcl p { margin: 0; max-width: 72ch; }
+  .fcl .eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+  .fcl .rule { width: 6rem; height: 4px; background: var(--gold); }
+  .fcl .lede { font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--mist); }
+  .fcl .lede b, .fcl .note b { font-weight: 700; color: var(--cream); }
+  .fcl .note { font-size: 0.92rem; color: var(--mist); }
+  .fcl .fine { font-size: 0.82rem; color: var(--dim); }
+  .fcl .card { background: var(--panel); border-radius: 16px; padding: clamp(1rem, 2.5vw, 2rem); display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
+  .fcl .chart { position: relative; min-height: 320px; }
+  .fcl .chart.short { min-height: 260px; }
+  .fcl .chart svg { display: block; width: 100%; overflow: visible; }
+  .fcl .chart text { font-family: var(--sans); font-size: 12px; fill: var(--mist); }
+  .fcl .chart .lab { fill: var(--cream); font-weight: 600; }
+  .fcl .chart .yr { fill: var(--cream); font-weight: 600; }
+  .fcl .chart .bandlab { fill: var(--gold); font-weight: 600; }
+  .fcl .tip { position: absolute; pointer-events: none; background: var(--deep); border: 1px solid var(--gold); border-radius: 8px; padding: 0.4rem 0.6rem; font-size: 0.85rem; color: var(--cream); white-space: nowrap; z-index: 2; }
+  .fcl .tip .t { color: var(--gold); font-weight: 600; }
+  .fcl .key { display: flex; gap: 0.5rem 1.25rem; flex-wrap: wrap; font-size: 0.88rem; color: var(--mist); }
+  .fcl .sw { display: inline-block; width: 0.75rem; height: 0.75rem; border-radius: 2px; vertical-align: -1px; margin-right: 0.35rem; }
+  .fcl .ln { display: inline-block; width: 1.1rem; height: 3px; vertical-align: 3px; margin-right: 0.35rem; }
+  .fcl .ln.dash { background: repeating-linear-gradient(90deg, var(--gold) 0 5px, transparent 5px 9px); }
+  .fcl .defs { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .fcl .defs > div { background: var(--deep); border-radius: 12px; padding: 1rem 1.1rem; display: grid; gap: 0.4rem; min-width: 0; }
+  .fcl .defs h3 { margin: 0; font-size: 1rem; color: var(--gold); }
+  .fcl details { background: var(--panel); border-radius: 12px; padding: 1rem 1.25rem; }
+  .fcl summary { font-family: var(--serif); font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+  .fcl details ul { margin: 0.75rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; color: var(--mist); font-size: 0.9rem; max-width: 78ch; }
+  .fcl a { color: var(--gold); text-underline-offset: 2px; }
+  .fcl a:focus-visible, .fcl summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .fcl [data-dash-source-state=refreshing] { opacity: .5; }
+</style>
+</head>
+<body>
+<script>window.__DASH_DATA__ = {"gifts": [{"quarter": "2015Q1", "start": "2015-01-01", "itemized": 120033.04, "unitemized": 196812.55, "refunds": 100.0, "other_receipts": 5652.64, "transfers_in": 0.0, "total_receipts": 322698.23, "individual": 316845.59}, {"quarter": "2015Q2", "start": "2015-04-01", "itemized": 63737.22, "unitemized": 151519.32, "refunds": 0.0, "other_receipts": 13599.0, "transfers_in": 0.0, "total_receipts": 230183.54, "individual": 215256.54}, {"quarter": "2015Q3", "start": "2015-07-01", "itemized": 175531.51, "unitemized": 148987.28, "refunds": 150.0, "other_receipts": 1197.99, "transfers_in": 0.0, "total_receipts": 330039.98, "individual": 324518.79}, {"quarter": "2015Q4", "start": "2015-10-01", "itemized": 179200.25, "unitemized": 137004.22, "refunds": 0.0, "other_receipts": 1975.0, "transfers_in": 0.0, "total_receipts": 320393.17, "individual": 316204.47}, {"quarter": "2016Q1", "start": "2016-01-01", "itemized": 112268.68, "unitemized": 140669.12, "refunds": 275.0, "other_receipts": 3200.0, "transfers_in": 0.0, "total_receipts": 256137.8, "individual": 252937.8}, {"quarter": "2016Q2", "start": "2016-04-01", "itemized": 470463.87, "unitemized": 420299.15, "refunds": 4489.0, "other_receipts": 1510.0, "transfers_in": 650.0, "total_receipts": 926258.02, "individual": 890763.02}, {"quarter": "2016Q3", "start": "2016-07-01", "itemized": 479688.23, "unitemized": 454581.48, "refunds": 215.0, "other_receipts": 10000.0, "transfers_in": 500.0, "total_receipts": 945072.04, "individual": 934269.71}, {"quarter": "2016Q4", "start": "2016-10-01", "itemized": 144382.99, "unitemized": 194212.55, "refunds": 45.0, "other_receipts": 200.0, "transfers_in": 0.0, "total_receipts": 369468.17, "individual": 338595.54}, {"quarter": "2017Q1", "start": "2017-01-01", "itemized": 130182.23, "unitemized": 237344.04, "refunds": 50.0, "other_receipts": 59205.99, "transfers_in": 0.0, "total_receipts": 430732.26, "individual": 367526.27}, {"quarter": "2017Q2", "start": "2017-04-01", "itemized": 168353.56, "unitemized": 211775.26, "refunds": 25.0, "other_receipts": 887.0, "transfers_in": 0.0, "total_receipts": 381015.82, "individual": 380128.82}, {"quarter": "2017Q3", "start": "2017-07-01", "itemized": 237371.28, "unitemized": 162144.42, "refunds": 317.0, "other_receipts": 1291.0, "transfers_in": 0.0, "total_receipts": 404154.26, "individual": 399515.7}, {"quarter": "2017Q4", "start": "2017-10-01", "itemized": 251388.0, "unitemized": 177151.5, "refunds": 1537.0, "other_receipts": 7820.01, "transfers_in": 0.0, "total_receipts": 439159.51, "individual": 428539.5}, {"quarter": "2018Q1", "start": "2018-01-01", "itemized": 274276.2, "unitemized": 243086.54, "refunds": 2003.0, "other_receipts": 405.0, "transfers_in": 0.0, "total_receipts": 521750.75, "individual": 517362.74}, {"quarter": "2018Q2", "start": "2018-04-01", "itemized": 176056.34, "unitemized": 231082.35, "refunds": 8707.0, "other_receipts": 2000.0, "transfers_in": 0.0, "total_receipts": 413375.19, "individual": 407138.69}, {"quarter": "2018Q3", "start": "2018-07-01", "itemized": 292882.02, "unitemized": 195708.43, "refunds": 250.0, "other_receipts": 1200.0, "transfers_in": 8000.0, "total_receipts": 499588.75, "individual": 488590.45}, {"quarter": "2018Q4", "start": "2018-10-01", "itemized": 175632.69, "unitemized": 155377.72, "refunds": 0.0, "other_receipts": 4015.0, "transfers_in": 0.0, "total_receipts": 336316.94, "individual": 331010.41}, {"quarter": "2019Q1", "start": "2019-01-01", "itemized": 205873.6, "unitemized": 227781.04, "refunds": 1000.0, "other_receipts": 15847.0, "transfers_in": 535.0, "total_receipts": 450036.64, "individual": 433654.64}, {"quarter": "2019Q2", "start": "2019-04-01", "itemized": 191392.5, "unitemized": 206375.33, "refunds": 0.0, "other_receipts": 10155.09, "transfers_in": 360.0, "total_receipts": 409525.93, "individual": 397767.83}, {"quarter": "2019Q3", "start": "2019-07-01", "itemized": 208881.82, "unitemized": 183494.33, "refunds": 35.0, "other_receipts": 4550.0, "transfers_in": 270.0, "total_receipts": 400816.23, "individual": 392376.15}, {"quarter": "2019Q4", "start": "2019-10-01", "itemized": 256281.33, "unitemized": 188797.64, "refunds": 1209.17, "other_receipts": 74671.0, "transfers_in": 270.0, "total_receipts": 528333.97, "individual": 445078.97}, {"quarter": "2020Q1", "start": "2020-01-01", "itemized": 275706.07, "unitemized": 249755.3, "refunds": 9906.0, "other_receipts": 12365.61, "transfers_in": 6978.0, "total_receipts": 557304.98, "individual": 525461.37}, {"quarter": "2020Q2", "start": "2020-04-01", "itemized": 233824.59, "unitemized": 336062.84, "refunds": 87480.09, "other_receipts": 1500.0, "transfers_in": 270.0, "total_receipts": 575157.43, "individual": 569887.43}, {"quarter": "2020Q3", "start": "2020-07-01", "itemized": 347777.88, "unitemized": 319334.9, "refunds": 21311.8, "other_receipts": 7598.0, "transfers_in": 270.0, "total_receipts": 677835.22, "individual": 667112.78}, {"quarter": "2020Q4", "start": "2020-10-01", "itemized": 206605.13, "unitemized": 201418.09, "refunds": 1572.25, "other_receipts": 94913.14, "transfers_in": 270.0, "total_receipts": 505938.64, "individual": 408023.22}, {"quarter": "2021Q1", "start": "2021-01-01", "itemized": 178787.89, "unitemized": 269354.46, "refunds": 182.5, "other_receipts": 40819.26, "transfers_in": 270.0, "total_receipts": 489231.61, "individual": 448142.35}, {"quarter": "2021Q2", "start": "2021-04-01", "itemized": 241531.66, "unitemized": 253367.62, "refunds": 832.5, "other_receipts": 903.95, "transfers_in": 1880.0, "total_receipts": 497697.23, "individual": 494899.28}, {"quarter": "2021Q3", "start": "2021-07-01", "itemized": 333921.11, "unitemized": 241760.46, "refunds": 2063.37, "other_receipts": 111798.15, "transfers_in": 1288.75, "total_receipts": 688820.89, "individual": 575681.57}, {"quarter": "2021Q4", "start": "2021-10-01", "itemized": 357922.82, "unitemized": 208962.9, "refunds": 888.56, "other_receipts": 449.5, "transfers_in": 520.0, "total_receipts": 568535.02, "individual": 566885.72}, {"quarter": "2022Q1", "start": "2022-01-01", "itemized": 229498.42, "unitemized": 257873.69, "refunds": 4777.17, "other_receipts": 4650.31, "transfers_in": 0.0, "total_receipts": 496148.92, "individual": 487372.11}, {"quarter": "2022Q2", "start": "2022-04-01", "itemized": 462070.52, "unitemized": 276932.96, "refunds": 8759.74, "other_receipts": 6401.45, "transfers_in": 2525.0, "total_receipts": 813932.66, "individual": 739003.48}, {"quarter": "2022Q3", "start": "2022-07-01", "itemized": 172301.37, "unitemized": 204280.5, "refunds": 890.1, "other_receipts": 11087.96, "transfers_in": 0.0, "total_receipts": 392669.83, "individual": 376581.87}, {"quarter": "2022Q4", "start": "2022-10-01", "itemized": 186788.99, "unitemized": 185595.67, "refunds": 238.75, "other_receipts": 949.4, "transfers_in": 0.0, "total_receipts": 374061.26, "individual": 372384.66}, {"quarter": "2023Q1", "start": "2023-01-01", "itemized": 50299.52, "unitemized": 186468.08, "refunds": 2160.75, "other_receipts": 1890.5, "transfers_in": 0.0, "total_receipts": 239147.1, "individual": 236767.6}, {"quarter": "2023Q2", "start": "2023-04-01", "itemized": 105312.04, "unitemized": 165047.41, "refunds": 5.0, "other_receipts": 2474.05, "transfers_in": 0.0, "total_receipts": 273999.04, "individual": 270359.45}, {"quarter": "2023Q3", "start": "2023-07-01", "itemized": 91706.34, "unitemized": 162155.37, "refunds": 2386.5, "other_receipts": 1139.7, "transfers_in": 0.0, "total_receipts": 255001.41, "individual": 253861.71}, {"quarter": "2023Q4", "start": "2023-10-01", "itemized": 253077.92, "unitemized": 198451.68, "refunds": 735.0, "other_receipts": 2403.05, "transfers_in": 0.0, "total_receipts": 454166.15, "individual": 451529.6}, {"quarter": "2024Q1", "start": "2024-01-01", "itemized": 135549.39, "unitemized": 199953.56, "refunds": 80.0, "other_receipts": 817.26, "transfers_in": 0.0, "total_receipts": 336700.89, "individual": 335502.95}, {"quarter": "2024Q2", "start": "2024-04-01", "itemized": 212835.59, "unitemized": 152129.72, "refunds": 555.58, "other_receipts": 341824.58, "transfers_in": 0.0, "total_receipts": 707761.91, "individual": 364965.31}, {"quarter": "2024Q3", "start": "2024-07-01", "itemized": 125492.69, "unitemized": 103240.78, "refunds": 17333.35, "other_receipts": 303.0, "transfers_in": 1934505.0, "total_receipts": 2177625.33, "individual": 228733.47}, {"quarter": "2024Q4", "start": "2024-10-01", "itemized": 120670.4, "unitemized": 103836.33, "refunds": 0.0, "other_receipts": 220.39, "transfers_in": 2064485.0, "total_receipts": 2622452.46, "individual": 224506.73}, {"quarter": "2025Q1", "start": "2025-01-01", "itemized": 47079.4, "unitemized": 130085.1, "refunds": 0.0, "other_receipts": 283.76, "transfers_in": 2440762.3, "total_receipts": 2838098.05, "individual": 177164.5}, {"quarter": "2025Q2", "start": "2025-04-01", "itemized": 65122.94, "unitemized": 99061.5, "refunds": 0.0, "other_receipts": 528.64, "transfers_in": 702391.96, "total_receipts": 883427.33, "individual": 164184.44}, {"quarter": "2025Q3", "start": "2025-07-01", "itemized": 145377.02, "unitemized": 92780.23, "refunds": 0.0, "other_receipts": 640819.85, "transfers_in": 1952.31, "total_receipts": 908499.63, "individual": 238157.25}, {"quarter": "2025Q4", "start": "2025-10-01", "itemized": 136496.13, "unitemized": 92339.92, "refunds": 121.75, "other_receipts": 2241.79, "transfers_in": 0.0, "total_receipts": 236678.7, "individual": 228836.05}, {"quarter": "2026Q1", "start": "2026-01-01", "itemized": 128025.71, "unitemized": 117394.04, "refunds": 0.0, "other_receipts": 2212.48, "transfers_in": 0.0, "total_receipts": 251155.39, "individual": 245419.75}, {"quarter": "2026Q2", "start": "2026-04-01", "itemized": 229251.08, "unitemized": 101069.39, "refunds": 257.55, "other_receipts": 3347.06, "transfers_in": 0.0, "total_receipts": 335012.8, "individual": 330320.47}, {"quarter": "2026Q3", "start": "2026-07-01", "itemized": 73294.79, "unitemized": 96389.01, "refunds": 36.03, "other_receipts": 1391.46, "transfers_in": 0.0, "total_receipts": 171075.26, "individual": 169683.8}], "members": [{"month": "2015-01", "date": "2015-01-01", "members": 12294, "method": "old"}, {"month": "2015-02", "date": "2015-02-01", "members": 12260, "method": "old"}, {"month": "2015-03", "date": "2015-03-01", "members": 12122, "method": "old"}, {"month": "2015-04", "date": "2015-04-01", "members": 12040, "method": "old"}, {"month": "2015-05", "date": "2015-05-01", "members": 11722, "method": "old"}, {"month": "2015-06", "date": "2015-06-01", "members": 11723, "method": "old"}, {"month": "2015-07", "date": "2015-07-01", "members": 11625, "method": "old"}, {"month": "2015-08", "date": "2015-08-01", "members": 11612, "method": "old"}, {"month": "2015-09", "date": "2015-09-01", "members": 11593, "method": "old"}, {"month": "2015-10", "date": "2015-10-01", "members": 11247, "method": "old"}, {"month": "2015-11", "date": "2015-11-01", "members": 11173, "method": "old"}, {"month": "2015-12", "date": "2015-12-01", "members": 11045, "method": "old"}, {"month": "2016-01", "date": "2016-01-01", "members": 11112, "method": "old"}, {"month": "2016-02", "date": "2016-02-01", "members": 11400, "method": "old"}, {"month": "2016-03", "date": "2016-03-01", "members": 11768, "method": "old"}, {"month": "2016-04", "date": "2016-04-01", "members": 12461, "method": "old"}, {"month": "2016-05", "date": "2016-05-01", "members": 14554, "method": "old"}, {"month": "2016-06", "date": "2016-06-01", "members": 15448, "method": "old"}, {"month": "2016-07", "date": "2016-07-01", "members": 16759, "method": "old"}, {"month": "2016-08", "date": "2016-08-01", "members": 17541, "method": "old"}, {"month": "2016-09", "date": "2016-09-01", "members": 18071, "method": "old"}, {"month": "2016-10", "date": "2016-10-01", "members": 18486, "method": "old"}, {"month": "2016-11", "date": "2016-11-01", "members": 18805, "method": "old"}, {"month": "2016-12", "date": "2016-12-01", "members": 19003, "method": "old"}, {"month": "2017-01", "date": "2017-01-01", "members": 19293, "method": "old"}, {"month": "2017-02", "date": "2017-02-01", "members": 19152, "method": "old"}, {"month": "2017-03", "date": "2017-03-01", "members": 18864, "method": "old"}, {"month": "2017-04", "date": "2017-04-01", "members": 18399, "method": "old"}, {"month": "2017-05", "date": "2017-05-01", "members": 17301, "method": "old"}, {"month": "2017-06", "date": "2017-06-01", "members": 16622, "method": "old"}, {"month": "2017-07", "date": "2017-07-01", "members": 15706, "method": "old"}, {"month": "2017-08", "date": "2017-08-01", "members": 14700, "method": "old"}, {"month": "2017-09", "date": "2017-09-01", "members": 14504, "method": "old"}, {"month": "2017-10", "date": "2017-10-01", "members": 14426, "method": "old"}, {"month": "2017-11", "date": "2017-11-01", "members": 14423, "method": "old"}, {"month": "2017-12", "date": "2017-12-01", "members": 14668, "method": "old"}, {"month": "2018-01", "date": "2018-01-01", "members": 14646, "method": "old"}, {"month": "2018-02", "date": "2018-02-01", "members": 14702, "method": "old"}, {"month": "2018-03", "date": "2018-03-01", "members": 14798, "method": "old"}, {"month": "2018-04", "date": "2018-04-01", "members": 14891, "method": "old"}, {"month": "2018-05", "date": "2018-05-01", "members": 14819, "method": "old"}, {"month": "2018-06", "date": "2018-06-01", "members": 14634, "method": "old"}, {"month": "2018-07", "date": "2018-07-01", "members": 14955, "method": "old"}, {"month": "2018-08", "date": "2018-08-01", "members": 15298, "method": "old"}, {"month": "2018-09", "date": "2018-09-01", "members": 15163, "method": "old"}, {"month": "2018-10", "date": "2018-10-01", "members": 15150, "method": "old"}, {"month": "2018-11", "date": "2018-11-01", "members": 15016, "method": "old"}, {"month": "2018-12", "date": "2018-12-01", "members": 14639, "method": "old"}, {"month": "2019-01", "date": "2019-01-01", "members": 14385, "method": "old"}, {"month": "2019-02", "date": "2019-02-01", "members": 14372, "method": "old"}, {"month": "2019-03", "date": "2019-03-01", "members": 14327, "method": "old"}, {"month": "2019-04", "date": "2019-04-01", "members": 14324, "method": "old"}, {"month": "2019-05", "date": "2019-05-01", "members": 14288, "method": "old"}, {"month": "2019-06", "date": "2019-06-01", "members": 14208, "method": "old"}, {"month": "2019-07", "date": "2019-07-01", "members": 13934, "method": "old"}, {"month": "2019-08", "date": "2019-08-01", "members": 13963, "method": "old"}, {"month": "2019-09", "date": "2019-09-01", "members": 14139, "method": "old"}, {"month": "2019-10", "date": "2019-10-01", "members": 14501, "method": "old"}, {"month": "2019-11", "date": "2019-11-01", "members": 15117, "method": "old"}, {"month": "2019-12", "date": "2019-12-01", "members": 15627, "method": "old"}, {"month": "2020-01", "date": "2020-01-01", "members": 15791, "method": "old"}, {"month": "2020-02", "date": "2020-02-01", "members": 15936, "method": "old"}, {"month": "2020-03", "date": "2020-03-01", "members": 15944, "method": "old"}, {"month": "2020-04", "date": "2020-04-01", "members": 16374, "method": "old"}, {"month": "2020-05", "date": "2020-05-01", "members": 17026, "method": "old"}, {"month": "2020-06", "date": "2020-06-01", "members": 18294, "method": "old"}, {"month": "2020-07", "date": "2020-07-01", "members": 19013, "method": "old"}, {"month": "2020-08", "date": "2020-08-01", "members": 19418, "method": "old"}, {"month": "2020-09", "date": "2020-09-01", "members": 20023, "method": "old"}, {"month": "2020-10", "date": "2020-10-01", "members": 20138, "method": "old"}, {"month": "2020-11", "date": "2020-11-01", "members": 20158, "method": "old"}, {"month": "2020-12", "date": "2020-12-01", "members": 19803, "method": "old"}, {"month": "2021-01", "date": "2021-01-01", "members": 20215, "method": "old"}, {"month": "2021-02", "date": "2021-02-01", "members": 20002, "method": "old"}, {"month": "2021-03", "date": "2021-03-01", "members": 19834, "method": "old"}, {"month": "2021-04", "date": "2021-04-01", "members": 19834, "method": "old"}, {"month": "2021-05", "date": "2021-05-01", "members": 19354, "method": "old"}, {"month": "2021-06", "date": "2021-06-01", "members": 18540, "method": "old"}, {"month": "2021-07", "date": "2021-07-01", "members": 17578, "method": "old"}, {"month": "2021-08", "date": "2021-08-01", "members": 17095, "method": "old"}, {"month": "2021-09", "date": "2021-09-01", "members": 16835, "method": "old"}, {"month": "2021-10", "date": "2021-10-01", "members": 17284, "method": "old"}, {"month": "2021-11", "date": "2021-11-01", "members": 17032, "method": "old"}, {"month": "2021-12", "date": "2021-12-01", "members": 17014, "method": "old"}, {"month": "2022-01", "date": "2022-01-01", "members": 16694, "method": "old"}, {"month": "2022-02", "date": "2022-02-01", "members": 16629, "method": "old"}, {"month": "2022-03", "date": "2022-03-01", "members": 16550, "method": "old"}, {"month": "2022-04", "date": "2022-04-01", "members": 16334, "method": "old"}, {"month": "2022-05", "date": "2022-05-01", "members": 16254, "method": "old"}, {"month": "2022-06", "date": "2022-06-01", "members": 16818, "method": "old"}, {"month": "2022-07", "date": "2022-07-01", "members": 16851, "method": "old"}, {"month": "2022-08", "date": "2022-08-01", "members": 16778, "method": "old"}, {"month": "2022-09", "date": "2022-09-01", "members": 16505, "method": "old"}, {"month": "2022-10", "date": "2022-10-01", "members": 16724, "method": "old"}, {"month": "2022-11", "date": "2022-11-01", "members": 16624, "method": "old"}, {"month": "2022-12", "date": "2022-12-01", "members": 16988, "method": "current"}, {"month": "2023-01", "date": "2023-01-01", "members": 16507, "method": "current"}, {"month": "2023-02", "date": "2023-02-01", "members": 16308, "method": "current"}, {"month": "2023-03", "date": "2023-03-01", "members": 15954, "method": "current"}, {"month": "2023-04", "date": "2023-04-01", "members": 15539, "method": "current"}, {"month": "2023-05", "date": "2023-05-01", "members": 15060, "method": "current"}, {"month": "2023-06", "date": "2023-06-01", "members": 14080, "method": "current"}, {"month": "2023-07", "date": "2023-07-01", "members": 13620, "method": "current"}, {"month": "2023-08", "date": "2023-08-01", "members": 12728, "method": "current"}, {"month": "2023-09", "date": "2023-09-01", "members": 12317, "method": "current"}, {"month": "2023-10", "date": "2023-10-01", "members": 12747, "method": "current"}, {"month": "2023-11", "date": "2023-11-01", "members": 12492, "method": "current"}, {"month": "2023-12", "date": "2023-12-01", "members": 12344, "method": "current"}, {"month": "2024-01", "date": "2024-01-01", "members": 12326, "method": "current"}, {"month": "2024-02", "date": "2024-02-01", "members": 12334, "method": "current"}, {"month": "2024-03", "date": "2024-03-01", "members": 12358, "method": "current"}, {"month": "2024-04", "date": "2024-04-01", "members": 12211, "method": "current"}, {"month": "2024-05", "date": "2024-05-01", "members": 12204, "method": "current"}, {"month": "2024-06", "date": "2024-06-01", "members": 11936, "method": "current"}, {"month": "2024-07", "date": "2024-07-01", "members": 11892, "method": "current"}, {"month": "2024-08", "date": "2024-08-01", "members": 12061, "method": "current"}, {"month": "2024-09", "date": "2024-09-01", "members": 11461, "method": "current"}, {"month": "2024-10", "date": "2024-10-01", "members": 11679, "method": "current"}, {"month": "2024-11", "date": "2024-11-01", "members": 10731, "method": "current"}, {"month": "2024-12", "date": "2024-12-01", "members": 10569, "method": "current"}, {"month": "2025-01", "date": "2025-01-01", "members": 10367, "method": "current"}, {"month": "2025-02", "date": "2025-02-01", "members": 10177, "method": "current"}, {"month": "2025-03", "date": "2025-03-01", "members": 9954, "method": "current"}, {"month": "2025-04", "date": "2025-04-01", "members": 9794, "method": "current"}, {"month": "2025-05", "date": "2025-05-01", "members": 9595, "method": "current"}, {"month": "2025-06", "date": "2025-06-01", "members": 9517, "method": "current"}, {"month": "2025-07", "date": "2025-07-01", "members": 9399, "method": "current"}, {"month": "2025-08", "date": "2025-08-01", "members": 9868, "method": "current"}, {"month": "2025-09", "date": "2025-09-01", "members": 9801, "method": "current"}, {"month": "2025-10", "date": "2025-10-01", "members": 9348, "method": "current"}, {"month": "2025-11", "date": "2025-11-01", "members": 9296, "method": "current"}, {"month": "2025-12", "date": "2025-12-01", "members": 9090, "method": "current"}, {"month": "2026-01", "date": "2026-01-01", "members": 8989, "method": "current"}, {"month": "2026-02", "date": "2026-02-01", "members": 8972, "method": "current"}, {"month": "2026-03", "date": "2026-03-01", "members": 8852, "method": "current"}, {"month": "2026-04", "date": "2026-04-01", "members": 8816, "method": "current"}, {"month": "2026-05", "date": "2026-05-01", "members": 8875, "method": "current"}, {"month": "2026-06", "date": "2026-06-01", "members": 8878, "method": "current"}, {"month": "2026-07", "date": "2026-07-01", "members": 8916, "method": "current"}, {"month": "2026-08", "date": "2026-08-01", "members": 8948, "method": "current"}, {"month": "2026-09", "date": "2026-09-01", "members": 8891, "method": "current"}], "donors": [{"quarter": "2022Q1", "start": "2022-01-01", "new_donors": 261, "returning_donors": 5, "itemized_donors": 462}, {"quarter": "2022Q2", "start": "2022-04-01", "new_donors": 508, "returning_donors": 17, "itemized_donors": 1038}, {"quarter": "2022Q3", "start": "2022-07-01", "new_donors": 109, "returning_donors": 15, "itemized_donors": 735}, {"quarter": "2022Q4", "start": "2022-10-01", "new_donors": 230, "returning_donors": 34, "itemized_donors": 1080}, {"quarter": "2023Q1", "start": "2023-01-01", "new_donors": 40, "returning_donors": 8, "itemized_donors": 145}, {"quarter": "2023Q2", "start": "2023-04-01", "new_donors": 79, "returning_donors": 23, "itemized_donors": 375}, {"quarter": "2023Q3", "start": "2023-07-01", "new_donors": 69, "returning_donors": 26, "itemized_donors": 453}, {"quarter": "2023Q4", "start": "2023-10-01", "new_donors": 283, "returning_donors": 124, "itemized_donors": 1012}, {"quarter": "2024Q1", "start": "2024-01-01", "new_donors": 97, "returning_donors": 66, "itemized_donors": 296}, {"quarter": "2024Q2", "start": "2024-04-01", "new_donors": 171, "returning_donors": 80, "itemized_donors": 595}, {"quarter": "2024Q3", "start": "2024-07-01", "new_donors": 78, "returning_donors": 26, "itemized_donors": 597}, {"quarter": "2024Q4", "start": "2024-10-01", "new_donors": 114, "returning_donors": 49, "itemized_donors": 831}, {"quarter": "2025Q1", "start": "2025-01-01", "new_donors": 24, "returning_donors": 9, "itemized_donors": 130}, {"quarter": "2025Q2", "start": "2025-04-01", "new_donors": 21, "returning_donors": 15, "itemized_donors": 233}, {"quarter": "2025Q3", "start": "2025-07-01", "new_donors": 35, "returning_donors": 33, "itemized_donors": 359}, {"quarter": "2025Q4", "start": "2025-10-01", "new_donors": 55, "returning_donors": 36, "itemized_donors": 540}, {"quarter": "2026Q1", "start": "2026-01-01", "new_donors": 55, "returning_donors": 54, "itemized_donors": 202}, {"quarter": "2026Q2", "start": "2026-04-01", "new_donors": 143, "returning_donors": 92, "itemized_donors": 468}, {"quarter": "2026Q3", "start": "2026-07-01", "new_donors": 79, "returning_donors": 52, "itemized_donors": 477}]};</script>
+<script>
+/* Stand-in for the claude.ai dashboard host: the same dash.data / calc / draw calls, over data
+   embedded in this page. */
+window.dash = (function () {
+  const DATA = window.__DASH_DATA__, calcs = {}, draws = {};
+  const api = {
+    colors: [],
+    data(id) {
+      if (id in DATA) return { status: 'ok', data: DATA[id], columns: DATA[id][0] ? Object.keys(DATA[id][0]) : [], meta: [] };
+      const c = calcs[id];
+      if (c) { if (!('v' in c)) c.v = c.fn(...c.inputs.map((i) => api.data(i).data)); return { status: 'ok', data: c.v, meta: [] }; }
+      return { status: 'missing', data: [], meta: [] };
+    },
+    calc(id, o) { calcs[id] = o; },
+    loader() {},
+    draw(name, fn) {
+      if (fn) draws[name] = fn;
+      document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => { try { draws[name] && draws[name](el); } catch (e) { console.error(name, e); } });
+    },
+    onData(fn) { fn(); },
+    params() { return {}; }, setParams() {}, resetParams() {}, setLink() {}, refresh() {},
+  };
+  let w = 0, t = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { if (Math.abs(window.innerWidth - w) > 2) { w = window.innerWidth; Object.keys(draws).forEach((n) => api.draw(n)); } }, 150);
+  });
+  w = window.innerWidth;
+  return api;
+})();
+</script>
+<div id="dash-root">
+
+<div class="fcl">
+  <header style="display:grid;gap:1rem">
+    <p class="eyebrow">The LNC record</p>
+    <h1 id="top">Freedom Calls Long View</h1>
+    <div class="rule"></div>
+    <p class="lede">In the year before the phone calls began, gifts of $200 or less fell from <b data-draw="k-pre" data-source="kpi" data-field="small_q2_2022">—</b> to <b data-draw="k-base" data-source="kpi" data-field="small_q2_2023">—</b> a year. While the calls ran, they held between <b data-draw="k-lo" data-source="kpi" data-field="plateau_low">—</b> and <b data-draw="k-hi" data-source="kpi" data-field="plateau_high">—</b> for four quarters, then fell again from mid-2024.</p>
+    <p class="note">The shaded band marks the calling period: Austin Padgett under his own contract from August 2023 to January 2024, then his company Freedom Calls from January 28, 2024 to January 29, 2025. Money is the LNC's federal account as reported to the FEC. Convention money, Kennedy joint fundraising and the 2025 sale of an asset are reported on other lines and left out.</p>
+  </header>
+
+  <section class="card" id="gifts">
+    <h2>Individual Gifts, By Quarter</h2>
+    <p class="note">FEC lines 11(a)(i) and 11(a)(ii): gifts from donors who gave over $200 in the calendar year (itemized), and the rest (unitemized).</p>
+    <div class="key"><span><i class="sw" style="background:var(--slate2)"></i>Over $200 a year</span><span><i class="sw" style="background:var(--gold)"></i>$200 or less a year</span></div>
+    <div class="chart" data-draw="c-gifts" data-source="gifts">—</div>
+  </section>
+
+  <section class="card" id="members">
+    <h2>Sustaining Members, By Month</h2>
+    <p class="note">As first reported in each month's report. The counting method changed in December 2022 (see How Members Were Counted, below).</p>
+    <div class="chart short" data-draw="c-members" data-source="members">—</div>
+  </section>
+
+  <section class="card" id="donors">
+    <h2>New And Returning Donors Over $200, By Quarter</h2>
+    <p class="note">New: a donor's first itemized gift in the FEC data, which starts January 2021, so 2022 counts more donors as new and fewer as returning. Returning: an itemized gift after more than 12 months without one. Donors appear once their calendar-year total passes $200, so the fourth quarter always gains some.</p>
+    <div class="key"><span><i class="ln" style="background:var(--mist)"></i>New</span><span><i class="ln dash"></i>Returning</span></div>
+    <div class="chart short" data-draw="c-donors" data-source="donors">—</div>
+  </section>
+
+  <section class="card" id="indexed-small">
+    <h2>Members And Small Gifts, Indexed</h2>
+    <p class="note">Both set to 100 in the second quarter of 2023, the last full quarter before the calls. Small gifts are a rolling 12-month total, so the seasons drop out; each point covers the year before it.</p>
+    <div class="key"><span><i class="ln" style="background:var(--mist)"></i>Sustaining members at quarter end</span><span><i class="ln dash"></i>Gifts of $200 or less, rolling 12 months</span></div>
+    <div class="chart" data-draw="c-idx-small" data-source="idx">—</div>
+  </section>
+
+  <section class="card" id="indexed-all">
+    <h2>Members And All Individual Gifts, Indexed</h2>
+    <p class="note">The same view with every individual gift, large and small, in one line. Rolling 12-month total, set to 100 in the second quarter of 2023.</p>
+    <div class="key"><span><i class="ln" style="background:var(--mist)"></i>Sustaining members at quarter end</span><span><i class="ln dash"></i>All individual gifts, rolling 12 months</span></div>
+    <div class="chart" data-draw="c-idx-all" data-source="idx">—</div>
+  </section>
+
+  <section class="card" id="long-view">
+    <h2>The Longer View, 2016–2026</h2>
+    <p class="note">Members and all individual gifts back to 2016, on the same base (second quarter of 2023 = 100). Gifts and members rose in 2016 and 2020, both presidential years. In 2024, also a presidential year, they didn't.</p>
+    <div class="key"><span><i class="ln" style="background:var(--mist)"></i>Sustaining members at quarter end</span><span><i class="ln dash"></i>All individual gifts, rolling 12 months</span></div>
+    <div class="chart" data-draw="c-long" data-source="idx">—</div>
+  </section>
+
+  <section class="card" id="counting">
+    <h2>How Members Were Counted</h2>
+    <p class="note">The definition stayed the same from 2016 to 2026: a sustaining member is someone who gave at least $25 in the prior 12 months, or a life member (Bylaws, Art. 4.4(a)). What changed is how staff counted it, twice.</p>
+    <div class="defs">
+      <div><h3>To November 2022: the old count</h3><p class="note" id="def-old">Read from the membership label on each record in the donor database, first Raiser's Edge, then CiviCRM. The report's column is "By Law Definition of 'Sustaining Member'", and it includes life members.</p></div>
+      <div><h3>From December 2022: the current count</h3><p class="note" id="def-new">A query by the CTO that counts actual gifts across every 365-day period, instead of relying on the label. Executive Director Lainie Huston announced it on June 28, 2023, saying "Hundreds of members have been missing over each of the last 25 months." It still doesn't check when a pledge was signed.</p></div>
+      <div><h3>December 2024: a second break</h3><p class="note" id="def-zoho">With the move to Zoho, the December 2024 report marks a "Baseline Established Through New System". Sustaining members went from 10,731 in November to 10,569, and life members from 3,286 to 2,975.</p></div>
+    </div>
+    <p class="note" id="def-overlap">Where both counts exist, the current one is higher: by 657 (4.0%) in December 2022, 270 in January 2023, 598 in February, 786 in March and 814 in April. So the old line undercounts by a varying amount, and the step at December 2022 is partly a counting change, not people joining or leaving. A 2022 convention proposal to require a signed pledge as well as dues was not adopted.</p>
+    <p class="fine">Sources: LNC membership reports for December 2022 (p.2), April and May 2023; the May 2023 finance report's explanation; the December 2024 membership report; the 2026 Bylaws, Art. 4.4(a); 2022 convention minutes, p.144.</p>
+  </section>
+
+  <section class="card" id="reading">
+    <h2>What The Charts Can And Can't Show</h2>
+    <ul class="note" style="margin:0;padding-left:1.1rem;display:grid;gap:.5rem;max-width:78ch">
+      <li><b>For the calls.</b> Members and small gifts both stopped falling for about a year after the calls began, the only flat stretch since 2022. Donors returning after a year away hit the highest counts in the series from late 2023 to mid-2024. The SIC set aside calls marked "Donated" because the people said they had already renewed, and counted none of those renewals.</li>
+      <li><b>Against.</b> The flat stretch also fits the 2023 card-data loss running its course. The decline after the calls ended is as slow as during them. The steepest fall after mid-2023 came in late 2024, while Freedom Calls was still calling.</li>
+      <li><b>Open.</b> The renewed fall begins with the August 2024 move of payments and records to Zoho. Whether that move broke recurring charges, as the CiviCRM move did in 2023, is not in the public record.</li>
+      <li><b>What would settle it.</b> The call lists matched to renewals by member ID, and Zoho's recurring-gift records for August–December 2024. Only the LNC holds them.</li>
+    </ul>
+  </section>
+
+  <details>
+    <summary>Sources and method</summary>
+    <ul>
+      <li>Gifts: the LNC's FEC reports (committee C00255695), most recent version of each, placed in the quarter its coverage starts. Election-year October–December reports are combined into the fourth quarter.</li>
+      <li>Members: each month's figure as first reported in the LNC's monthly reports. Later reports twice slipped a column and misdated months; this page uses each month's own report.</li>
+      <li>Donors: the LNC's FEC Schedule A rows for line 11(a)(i), January 2021 onward, matched by name and ZIP code. Counts only; no donor is named.</li>
+      <li>Rolling totals and index values are worked out on this page from the source rows; Sources shows each formula.</li>
+      <li>Internal working page for counsel's review. It records what the filings show, not a finding about anyone's conduct.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+  // Shared chart helpers on window (each script has its own scope).
+  window.fcl = (() => {
+    const BAND0 = new Date(Date.UTC(2023, 7, 1)), BAND1 = new Date(Date.UTC(2025, 1, 1));
+    const money = (v) => v >= 1e6 ? `$${(v / 1e6).toFixed(2)}M` : `$${Math.round(v / 1000)}k`;
+    const fmtQ = (q) => `Q${q.slice(5)} ${q.slice(0, 4)}`;
+    const parse = (s) => new Date(s + 'T00:00:00Z');
+    function frame(el, height, margin) {
+      el.replaceChildren();
+      const W = Math.max(280, el.clientWidth || 600);
+      const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${height}`).attr('height', height).attr('role', 'img');
+      const tip = d3.select(el).append('div').attr('class', 'tip').style('opacity', 0);
+      return {svg, tip, W, H: height, m: margin, iw: W - margin.l - margin.r, ih: height - margin.t - margin.b};
+    }
+    // Months on the x axis: quarter months (Jan Apr Jul Oct), or Jan/Jul when narrow; year under each January.
+    function timeAxis(f, x, d0, d1) {
+      const g = f.svg.append('g').attr('transform', `translate(0,${f.m.t + f.ih})`);
+      const months = d3.utcMonths(d0, d1);
+      const span = months.length, px = f.iw / Math.max(1, span);
+      const step = px * 3 >= 30 ? 3 : px * 6 >= 30 ? 6 : 12;
+      const yearEvery = px * 12 >= 40 ? 1 : px * 24 >= 40 ? 2 : 5;
+      months.filter((d) => d.getUTCMonth() % step === 0).forEach((d) => {
+        const xx = x(d);
+        g.append('line').attr('x1', xx).attr('x2', xx).attr('y1', 0).attr('y2', 5).style('stroke', 'rgba(197,207,223,.35)');
+        if (step < 12) g.append('text').attr('x', xx).attr('y', 17).attr('text-anchor', 'middle').text(d3.utcFormat('%b')(d));
+        if (d.getUTCMonth() === 0 && d.getUTCFullYear() % yearEvery === 0) g.append('text').attr('class', 'yr').attr('x', xx).attr('y', step < 12 ? 32 : 17).attr('text-anchor', 'middle').text(d.getUTCFullYear());
+      });
+      g.append('line').attr('x1', f.m.l).attr('x2', f.m.l + f.iw).style('stroke', 'rgba(197,207,223,.35)');
+    }
+    function band(f, x, label) {
+      const a = Math.max(f.m.l, x(BAND0)), b = Math.min(f.m.l + f.iw, x(BAND1));
+      if (b <= a) return;
+      f.svg.append('rect').attr('x', a).attr('y', f.m.t).attr('width', b - a).attr('height', f.ih).style('fill', 'rgba(226,177,60,.10)');
+      if (label) f.svg.append('text').attr('class', 'bandlab').attr('x', (a + b) / 2).attr('y', f.m.t + 14).attr('text-anchor', 'middle').text('Calling period');
+    }
+    function yGrid(f, y, ticks, fmt) {
+      const g = f.svg.append('g');
+      ticks.forEach((t) => {
+        g.append('line').attr('x1', f.m.l).attr('x2', f.m.l + f.iw).attr('y1', y(t)).attr('y2', y(t)).style('stroke', t === 100 && fmt === String ? 'rgba(197,207,223,.45)' : 'rgba(197,207,223,.16)');
+        g.append('text').attr('x', f.m.l - 8).attr('y', y(t) + 4).attr('text-anchor', 'end').text(fmt(t));
+      });
+    }
+    function showTip(f, html, px, py) {
+      f.tip.html('').style('opacity', 1);
+      html.forEach((line, i) => f.tip.append('div').attr('class', i === 0 ? 't' : null).text(line));
+      const tw = f.tip.node().offsetWidth, left = Math.min(Math.max(0, px - tw / 2), f.W - tw);
+      f.tip.style('left', left + 'px').style('top', Math.max(0, py - 58) + 'px');
+    }
+    function placeholder(el, st) {
+      el.replaceChildren(); el.textContent = st && st.status === 'error' ? 'Failed to load' : '—';
+    }
+    // Two indexed lines over a date range, with hover.
+    function indexed(el, rows, key, d0, d1, gapLabel) {
+      const f = frame(el, 330, {t: 24, r: 16, b: 40, l: 44});
+      const pts = rows.filter((r) => r.date >= d0 && r.date <= d1);
+      const x = d3.scaleUtc().domain([parse(d0), d3.utcMonth.offset(parse(pts[pts.length - 1].date), 1)]).range([f.m.l, f.m.l + f.iw]);
+      const vals = pts.flatMap((r) => [r.members_index, r[key + '_index']]);
+      const lo = Math.floor(Math.min(...vals) / 20) * 20, hi = Math.ceil(Math.max(...vals) / 20) * 20;
+      const y = d3.scaleLinear().domain([lo, hi]).range([f.m.t + f.ih, f.m.t]);
+      band(f, x, true);
+      yGrid(f, y, d3.range(lo, hi + 1, 20), String);
+      timeAxis(f, x, x.domain()[0], x.domain()[1]);
+      const line = (k) => d3.line().x((r) => x(parse(r.date))).y((r) => y(r[k]));
+      f.svg.append('path').datum(pts).attr('d', line('members_index')).style('fill', 'none').style('stroke', 'var(--mist)').style('stroke-width', 2).style('stroke-linejoin', 'round');
+      f.svg.append('path').datum(pts).attr('d', line(key + '_index')).style('fill', 'none').style('stroke', 'var(--gold)').style('stroke-width', 2).style('stroke-dasharray', '5 4').style('stroke-linejoin', 'round');
+      const last = pts[pts.length - 1];
+      f.svg.append('circle').attr('cx', x(parse(last.date))).attr('cy', y(last.members_index)).attr('r', 4).style('fill', 'var(--mist)');
+      f.svg.append('circle').attr('cx', x(parse(last.date))).attr('cy', y(last[key + '_index'])).attr('r', 4).style('fill', 'var(--gold)');
+      const cross = f.svg.append('line').attr('y1', f.m.t).attr('y2', f.m.t + f.ih).style('stroke', 'rgba(226,177,60,.6)').style('opacity', 0);
+      f.svg.attr('aria-label', `Sustaining members and ${gapLabel}, indexed to the second quarter of 2023, ${pts[0].quarter} to ${last.quarter}.`);
+      f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', f.iw).attr('height', f.ih).style('fill', 'transparent')
+        .on('pointermove', (ev) => {
+          const [mx] = d3.pointer(ev);
+          const r = pts[d3.leastIndex(pts, (p) => Math.abs(x(parse(p.date)) - mx))];
+          cross.attr('x1', x(parse(r.date))).attr('x2', x(parse(r.date))).style('opacity', 1);
+          showTip(f, [fmtQ(r.quarter), `Members ${d3.format(',')(r.members)} (index ${r.members_index.toFixed(1)})`, `${gapLabel} ${money(r[key + '_12m'])} (index ${r[key + '_index'].toFixed(1)})`], x(parse(r.date)), y(Math.max(r.members_index, r[key + '_index'])));
+        })
+        .on('pointerleave', () => { cross.style('opacity', 0); f.tip.style('opacity', 0); });
+    }
+    return {money, fmtQ, parse, frame, timeAxis, band, yGrid, showTip, placeholder, indexed};
+  })();
+</script>
+
+<script>
+  // Index values: sustaining members at each quarter's end and rolling four-quarter gift totals, both as a share of Q2 2023.
+  dash.calc('idx', {
+    title: 'Members and gifts, indexed',
+    description: 'Members at quarter end and rolling 12-month gift totals, each divided by its second-quarter-2023 value and multiplied by 100.',
+    inputs: ['gifts', 'members'],
+    fn: (gifts, members) => {
+      const BASE = '2023Q2';
+      const mem = new Map(members.map((r) => [r.month, Number(r.members)]));
+      const qs = gifts.map((r) => r.quarter);
+      const rows = [];
+      gifts.forEach((r, i) => {
+        if (i < 3) return;
+        const win = gifts.slice(i - 3, i + 1);
+        const endMonth = `${r.quarter.slice(0, 4)}-${String(Number(r.quarter.slice(5)) * 3).padStart(2, '0')}`;
+        if (!mem.has(endMonth)) return;
+        rows.push({quarter: r.quarter, date: endMonth + '-01', members: mem.get(endMonth),
+          small_12m: d3.sum(win, (w) => Number(w.unitemized)), all_12m: d3.sum(win, (w) => Number(w.individual))});
+      });
+      const b = rows.find((r) => r.quarter === BASE);
+      rows.forEach((r) => {
+        r.members_index = 100 * r.members / b.members;
+        r.small_index = 100 * r.small_12m / b.small_12m;
+        r.all_index = 100 * r.all_12m / b.all_12m;
+      });
+      return rows;
+    },
+  });
+  dash.calc('kpi', {
+    title: 'Small gifts before and during the calls',
+    description: 'Rolling 12-month gifts of $200 or less at the end of Q2 2022 and Q2 2023, and the lowest and highest values from Q3 2023 to Q2 2024.',
+    inputs: ['idx'],
+    fn: (idx) => {
+      const at = (q) => idx.find((r) => r.quarter === q).small_12m;
+      const plateau = idx.filter((r) => r.quarter >= '2023Q3' && r.quarter <= '2024Q2').map((r) => r.small_12m);
+      return [{small_q2_2022: at('2022Q2'), small_q2_2023: at('2023Q2'), plateau_low: d3.min(plateau), plateau_high: d3.max(plateau)}];
+    },
+  });
+  ['k-pre:small_q2_2022', 'k-base:small_q2_2023', 'k-lo:plateau_low', 'k-hi:plateau_high'].forEach((pair) => {
+    const [name, field] = pair.split(':');
+    dash.draw(name, (el) => {
+      const k = dash.data('kpi');
+      el.textContent = k.status === 'ok' && k.data && k.data[0] ? fcl.money(k.data[0][field]) : '—';
+    });
+  });
+</script>
+
+<script>
+  dash.draw('c-gifts', (el) => {
+    const s = dash.data('gifts');
+    if (s.status !== 'ok') return fcl.placeholder(el, s);
+    const rows = s.data.filter((r) => r.quarter >= '2022Q1');
+    const f = fcl.frame(el, 340, {t: 24, r: 12, b: 40, l: 52});
+    const x = d3.scaleUtc().domain([fcl.parse('2022-01-01'), d3.utcMonth.offset(fcl.parse(rows[rows.length - 1].start), 3)]).range([f.m.l, f.m.l + f.iw]);
+    const max = d3.max(rows, (r) => Number(r.individual));
+    const top = Math.ceil(max / 200000) * 200000;
+    const y = d3.scaleLinear().domain([0, top]).range([f.m.t + f.ih, f.m.t]);
+    fcl.band(f, x, true);
+    fcl.yGrid(f, y, d3.range(0, top + 1, 200000), (v) => v === 0 ? '$0' : `$${v / 1000}k`);
+    fcl.timeAxis(f, x, x.domain()[0], x.domain()[1]);
+    const bw = Math.min(32, (x(fcl.parse('2022-04-01')) - x(fcl.parse('2022-01-01'))) * 0.72);
+    f.svg.attr('aria-label', 'Individual gifts to the LNC by quarter, 2022 to 2026, split into donors over and under $200 a year.');
+    rows.forEach((r) => {
+      const cx = x(d3.utcMonth.offset(fcl.parse(r.start), 1)) + (x(fcl.parse('2022-02-01')) - x(fcl.parse('2022-01-01'))) / 2;
+      const it = Number(r.itemized), un = Number(r.unitemized);
+      const g = f.svg.append('g');
+      g.append('rect').attr('x', cx - bw / 2).attr('width', bw).attr('y', y(it)).attr('height', Math.max(0, y(0) - y(it))).attr('rx', 2).style('fill', 'var(--slate2)');
+      g.append('rect').attr('x', cx - bw / 2).attr('width', bw).attr('y', y(it + un)).attr('height', Math.max(0, y(it) - y(it + un) - 2)).attr('rx', 2).style('fill', 'var(--gold)');
+      g.append('rect').attr('x', cx - bw / 2 - 3).attr('width', bw + 6).attr('y', f.m.t).attr('height', f.ih).style('fill', 'transparent')
+        .on('pointermove', () => fcl.showTip(f, [fcl.fmtQ(r.quarter), `All individual gifts ${fcl.money(it + un)}`, `Over $200 a year ${fcl.money(it)}`, `$200 or less ${fcl.money(un)}`], cx, y(it + un)))
+        .on('pointerleave', () => f.tip.style('opacity', 0));
+    });
+    if (f.iw > 520) {
+      const best = ['2022Q2', '2023Q1', '2023Q4', '2024Q2', '2025Q2', '2026Q2'];
+      rows.filter((r) => best.includes(r.quarter)).forEach((r) => {
+        const cx = x(d3.utcMonth.offset(fcl.parse(r.start), 1)) + (x(fcl.parse('2022-02-01')) - x(fcl.parse('2022-01-01'))) / 2;
+        f.svg.append('text').attr('class', 'lab').attr('x', cx).attr('y', y(Number(r.individual)) - 6).attr('text-anchor', 'middle').text(fcl.money(Number(r.individual)));
+      });
+    }
+  });
+
+  dash.draw('c-members', (el) => {
+    const s = dash.data('members');
+    if (s.status !== 'ok') return fcl.placeholder(el, s);
+    const rows = s.data.filter((r) => r.month >= '2022-01');
+    const f = fcl.frame(el, 280, {t: 24, r: 16, b: 40, l: 52});
+    const x = d3.scaleUtc().domain([fcl.parse('2022-01-01'), d3.utcMonth.offset(fcl.parse(rows[rows.length - 1].date), 1)]).range([f.m.l, f.m.l + f.iw]);
+    const y = d3.scaleLinear().domain([0, 18000]).range([f.m.t + f.ih, f.m.t]);
+    fcl.band(f, x, true);
+    fcl.yGrid(f, y, [0, 6000, 12000, 18000], d3.format(','));
+    fcl.timeAxis(f, x, x.domain()[0], x.domain()[1]);
+    const cxm = (r) => x(fcl.parse(r.date)) + (x(fcl.parse('2022-02-01')) - x(fcl.parse('2022-01-01'))) / 2;
+    f.svg.append('path').datum(rows).attr('d', d3.line().x(cxm).y((r) => y(Number(r.members)))).style('fill', 'none').style('stroke', 'var(--mist)').style('stroke-width', 2).style('stroke-linejoin', 'round');
+    (f.iw > 480 ? [['2022-12', 'New count'], ['2024-12', 'Zoho baseline']] : [['2022-12', 'New count'], ['2024-12', 'Zoho']]).forEach(([m, label]) => {
+      const chg = rows.find((r) => r.month === m);
+      if (!chg) return;
+      const yy = y(Number(chg.members));
+      f.svg.append('line').attr('x1', cxm(chg)).attr('x2', cxm(chg)).attr('y1', yy + 8).attr('y2', yy + 46).style('stroke', 'var(--warn)').style('stroke-dasharray', '3 3');
+      f.svg.append('text').attr('x', cxm(chg)).attr('y', yy + 60).attr('text-anchor', 'middle').style('fill', 'var(--warn)').text(label);
+    });
+    (f.iw > 480 ? ['2022-01', '2023-08', '2025-01', rows[rows.length - 1].month] : ['2022-01', rows[rows.length - 1].month]).forEach((m, i, arr) => {
+      const r = rows.find((d) => d.month === m); if (!r) return;
+      f.svg.append('circle').attr('cx', cxm(r)).attr('cy', y(Number(r.members))).attr('r', 4).style('fill', 'var(--mist)');
+      f.svg.append('text').attr('class', 'lab').attr('x', cxm(r)).attr('y', y(Number(r.members)) - 10).attr('text-anchor', i === 0 ? 'start' : i === arr.length - 1 ? 'end' : 'middle').text(d3.format(',')(r.members));
+    });
+    f.svg.attr('aria-label', 'Sustaining members by month, 2022 to 2026.');
+    const cross = f.svg.append('line').attr('y1', f.m.t).attr('y2', f.m.t + f.ih).style('stroke', 'rgba(226,177,60,.6)').style('opacity', 0);
+    f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', f.iw).attr('height', f.ih).style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [mx] = d3.pointer(ev);
+        const r = rows[d3.leastIndex(rows, (p) => Math.abs(cxm(p) - mx))];
+        cross.attr('x1', cxm(r)).attr('x2', cxm(r)).style('opacity', 1);
+        fcl.showTip(f, [d3.utcFormat('%B %Y')(fcl.parse(r.date)), `${d3.format(',')(r.members)} sustaining members`, r.method === 'old' ? 'Old counting method' : 'Current counting method'], cxm(r), y(Number(r.members)));
+      })
+      .on('pointerleave', () => { cross.style('opacity', 0); f.tip.style('opacity', 0); });
+  });
+
+  dash.draw('c-donors', (el) => {
+    const s = dash.data('donors');
+    if (s.status !== 'ok') return fcl.placeholder(el, s);
+    const rows = s.data;
+    const f = fcl.frame(el, 280, {t: 24, r: 16, b: 40, l: 44});
+    const x = d3.scaleUtc().domain([fcl.parse('2022-01-01'), d3.utcMonth.offset(fcl.parse(rows[rows.length - 1].start), 3)]).range([f.m.l, f.m.l + f.iw]);
+    const top = Math.ceil(d3.max(rows, (r) => Number(r.new_donors)) / 100) * 100;
+    const y = d3.scaleLinear().domain([0, top]).range([f.m.t + f.ih, f.m.t]);
+    fcl.band(f, x, true);
+    fcl.yGrid(f, y, d3.range(0, top + 1, 100), String);
+    fcl.timeAxis(f, x, x.domain()[0], x.domain()[1]);
+    const cx = (r) => x(d3.utcMonth.offset(fcl.parse(r.start), 1)) + (x(fcl.parse('2022-02-01')) - x(fcl.parse('2022-01-01'))) / 2;
+    f.svg.append('path').datum(rows).attr('d', d3.line().x(cx).y((r) => y(Number(r.new_donors)))).style('fill', 'none').style('stroke', 'var(--mist)').style('stroke-width', 2);
+    f.svg.append('path').datum(rows).attr('d', d3.line().x(cx).y((r) => y(Number(r.returning_donors)))).style('fill', 'none').style('stroke', 'var(--gold)').style('stroke-width', 2).style('stroke-dasharray', '5 4');
+    rows.forEach((r) => {
+      f.svg.append('circle').attr('cx', cx(r)).attr('cy', y(Number(r.new_donors))).attr('r', 3.5).style('fill', 'var(--mist)');
+      f.svg.append('circle').attr('cx', cx(r)).attr('cy', y(Number(r.returning_donors))).attr('r', 3.5).style('fill', 'var(--gold)');
+      f.svg.append('rect').attr('x', cx(r) - 12).attr('width', 24).attr('y', f.m.t).attr('height', f.ih).style('fill', 'transparent')
+        .on('pointermove', () => fcl.showTip(f, [fcl.fmtQ(r.quarter), `New ${r.new_donors}`, `Returning ${r.returning_donors}`, `All itemized donors ${r.itemized_donors}`], cx(r), y(Number(r.new_donors))))
+        .on('pointerleave', () => f.tip.style('opacity', 0));
+    });
+    f.svg.attr('aria-label', 'New and returning itemized donors by quarter, 2022 to 2026.');
+  });
+
+  dash.draw('c-idx-small', (el) => {
+    const s = dash.data('idx');
+    if (s.status !== 'ok' || !s.data) return fcl.placeholder(el, s);
+    fcl.indexed(el, s.data, 'small', '2022-01-01', '2026-12-31', 'Small gifts');
+  });
+  dash.draw('c-idx-all', (el) => {
+    const s = dash.data('idx');
+    if (s.status !== 'ok' || !s.data) return fcl.placeholder(el, s);
+    fcl.indexed(el, s.data, 'all', '2022-01-01', '2026-12-31', 'All gifts');
+  });
+  dash.draw('c-long', (el) => {
+    const s = dash.data('idx');
+    if (s.status !== 'ok' || !s.data) return fcl.placeholder(el, s);
+    fcl.indexed(el, s.data, 'all', '2016-01-01', '2026-12-31', 'All gifts');
+  });
+</script>
+</div>
+</body>
+</html>
